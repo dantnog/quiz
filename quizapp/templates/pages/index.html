@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+
+{% include 'layouts/navbar.html' %}
+<div class="container">
+  <h2 class="display-6 my-4">
+    All challenges
+  </h2>
+  <div class="">
+    {% if challenges %}
+      {% for item in challenges %}
+      <div class="">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title text-truncate">{{ item.title }}</h5>
+            {% if item.user_id.id == id %}
+            <a href="#" class="btn btn-sm btn-secondary">Edit</a>
+            {% endif %}
+            <a href="#" class="btn btn-sm btn-primary">Try this one</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+    <h3>No challenges found. Sorry :(</h3>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
