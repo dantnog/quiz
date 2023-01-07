@@ -7,9 +7,12 @@ from django.contrib.auth.hashers import make_password, check_password
 def index(request):
 	try:
 		challenges = Challenge.objects.order_by('-id')
+
+		user_id = request.session.get('user_id', None)
+		authenticated = request.session.get('authenticated', False)
 		return render(
 			request, 'pages/index.html',
-			{'challenges': challenges, 'id': 1}
+			{'challenges': challenges, 'user_id': user_id, 'authenticated': authenticated}
 		)
 	except Challenge.DoesNotExist:
 		print('*****\n[ERROR] Getting challenges\n*****')
@@ -73,9 +76,26 @@ def auth(request):
 			except:
 				alert = {'type': 'danger', 'message': 'Failed to create user. Try again later.'}
 				return render(request, 'pages/auth.html', {'alert': alert})
+
 		elif request.POST['action'] == 'login':
-			alert = {'type': 'warning', 'message': '...'}
-			return render(request, 'pages/auth.html', {'alert': alert})
+			try:
+				user = User.objects.get(name=username)
+				if not user:
+					alert = {'type': 'danger', 'message': 'User not found.'}
+					return render(request, 'pages/auth.html', {'alert': alert})
+
+				if not check_password(password, user.password):
+					alert = {'type': 'danger', 'message': 'Wrong password.'}
+					return render(request, 'pages/auth.html', {'alert': alert})
+					
+				request.session['authenticated'] = True
+				request.session['user_id'] = user.id
+				# Set session as modified to force data updates/cookie to be saved.
+				request.session.modified = True
+				return HttpResponseRedirect('/')
+			except:
+				alert = {'type': 'danger', 'message': 'Failed to login. Try again later.'}
+				return render(request, 'pages/auth.html', {'alert': alert})
 		else:
 			return render(request, 'pages/auth.html')
 
