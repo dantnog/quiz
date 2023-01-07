@@ -7,4 +7,5 @@ urlpatterns = [
 	path('<int:challenge_id>', views.challenge, name = 'challenge'),
 	path('solved', views.solved, name = 'solved'),
 	path('auth', views.auth, name = 'auth'),
+	path('auth/logout', views.logout, name = 'logout'),
 ]

@@ -101,3 +101,8 @@ def auth(request):
 
 	else:
 		return render(request, 'pages/auth.html')
+
+def logout(request):
+	request.session['authenticated'] = False
+	request.session['user_id'] = None
+	return HttpResponseRedirect('/auth')
