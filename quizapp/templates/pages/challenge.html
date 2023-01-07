@@ -4,9 +4,10 @@
 {% include 'layouts/navbar.html' %}
 
 <div class="container">
-  <h2 class="display-6 my-4">CHALLENGE</h2>
+  <h2 class="display-6 my-4">Challenge</h2>
   {% if questions %}
-      <form action="/solved" method="POST" class="mb-4">{% csrf_token %}
+    <form action="{% url 'quiz:solved' %}" method="POST" class="mb-4">
+      {% csrf_token %}
       <input type="hidden" name="challenge_id" value="{{ challenge_id }}">
     {% for item in questions %}
       <div class="card mb-4 p-4">
@@ -41,7 +42,7 @@
         <a href="/" class="btn btn-outline-secondary" type="button">Give up</a>
         <button class="btn btn-success ms-2" type="submit">Finish</button>
       </div>
-      </form>
+    </form>
   {% endif %}
 </div>
 

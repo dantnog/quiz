@@ -25,6 +25,9 @@ Home
               Edit
             </a>
             {% endif %}
+            <a href="{% url 'quiz:scores' item.id %}" class="btn btn-sm btn-warning">
+              Scores
+            </a>
             <a href="{% url 'quiz:challenge' item.id %}" class="btn btn-sm btn-primary">
               Try this challenge
             </a>
