@@ -10,8 +10,8 @@ Make sure you have [Python](https://www.python.org/downloads/) and [Django](http
 git clone https://github.com/dantnog/quiz.git
 cd quiz
 # create the db file
-python3 manage.py migrate
 python3 manage.py makemigrations
+python3 manage.py migrate
 # start the server
 python3 manage.py runserver
 ```
