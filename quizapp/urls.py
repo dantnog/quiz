@@ -6,4 +6,5 @@ urlpatterns = [
 	path('', views.index, name = 'index'),
 	path('<int:challenge_id>', views.challenge, name = 'challenge'),
 	path('solved', views.solved, name = 'solved'),
+	path('auth', views.auth, name = 'auth'),
 ]

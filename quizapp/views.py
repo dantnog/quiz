@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Question, Challenge, Score, User
+from datetime import datetime
+from django.contrib.auth.hashers import make_password, check_password
 
 def index(request):
 	try:
@@ -28,7 +30,7 @@ def challenge(request, challenge_id):
 
 def solved(request):
 	try:
-		if request.method != "POST":
+		if request.method != 'POST':
 			return HttpResponse(status=400)
 
 		questions = Question.objects.filter(challenge_id=request.POST['challenge_id'])
@@ -39,7 +41,7 @@ def solved(request):
 
 		points = 0
 		for id, res in request.POST.items():
-			if id == "csrfmiddlewaretoken" or id == "id" or id == "challenge_id":
+			if id == 'csrfmiddlewaretoken' or id == 'id' or id == 'challenge_id':
 				continue
 			if int(id) in answers.keys() and int(res) == answers[int(id)]:
 				points += 1
@@ -49,4 +51,33 @@ def solved(request):
 	except:
 		print('*****\n[ERROR] Saving solved challenges\n*****')
 		return HttpResponse(status=500)
-		#raise Http404('Questions not found')
+
+def auth(request):
+	if request.method == 'GET':
+		return render(request, 'pages/auth.html') 
+
+	elif request.method == 'POST':
+		username = request.POST['username'].strip()
+		password = request.POST['password'].strip()
+		if username == '' or password == '':
+			alert = {'type': 'warning', 'message': 'The data was empty.'}
+			return render(request, 'pages/auth.html', {'alert': alert})
+
+		if request.POST['action'] == 'register':
+			try:
+				hashed = make_password(password, 'SuperSalt')
+				User.objects.create(name=username, password=hashed, created_at=datetime.now())
+
+				alert = {'type': 'success', 'message': 'User created. You can login now.'}
+				return render(request, 'pages/auth.html', {'alert': alert})
+			except:
+				alert = {'type': 'danger', 'message': 'Failed to create user. Try again later.'}
+				return render(request, 'pages/auth.html', {'alert': alert})
+		elif request.POST['action'] == 'login':
+			alert = {'type': 'warning', 'message': '...'}
+			return render(request, 'pages/auth.html', {'alert': alert})
+		else:
+			return render(request, 'pages/auth.html')
+
+	else:
+		return render(request, 'pages/auth.html')

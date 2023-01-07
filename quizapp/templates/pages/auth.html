@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'layouts/navbar.html' %}
+
+<div class="mx-auto my-4 px-2" style="max-width: 22rem;">
+  {% if alert %}
+  <div class="alert alert-{{ alert.type }}" role="alert">
+    {{ alert.message }}
+  </div>
+  {% endif %}
+  <ul class="nav nav-pills mb-4" id="pills-tab" role="tablist">
+    <li class="nav-item w-50" role="presentation">
+        <button class="nav-link w-100 active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-login" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Login</button>
+    </li>
+    <li class="nav-item w-50" role="presentation">
+        <button class="nav-link w-100" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-register" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Register</button>
+    </li>
+  </ul>
+  <div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+      <form action="/auth" method="POST" class="">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="login">
+        <div class="form-floating mb-2">
+          <input type="text" class="form-control" id="username" name="username">
+          <label for="username">Username</label>
+        </div>
+        <div class="form-floating mb-2">
+          <input type="password" class="form-control" id="password" name=""password>
+          <label for="password">Password</label>
+        </div>
+        <button class="btn btn-success w-100 mt-4" type="submit">Login</button>
+      </form>
+    </div>
+    <div class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
+      <form action="/auth" method="POST" class="">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="register">
+        <div class="form-floating mb-2">
+          <input type="text" class="form-control" id="username" name="username">
+          <label for="username">Username</label>
+        </div>
+        <div class="form-floating mb-2">
+          <input type="password" class="form-control" id="password" name="password">
+          <label for="password">Password</label>
+        </div>
+        <div class="form-floating mb-2">
+          <input type="password" class="form-control" id="confirm" name="confirm">
+          <label for="confirm">Confirm password</label>
+        </div>
+        <button class="btn btn-success w-100 mt-4" type="submit">Register</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
