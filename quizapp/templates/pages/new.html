@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}
+	{% if type == 'challenge' %}
+	New Challenge
+	{% else %}
+	New Question
+	{% endif %}
+{% endblock %}
+
+{% block content %}
+{% include 'layouts/navbar.html' %}
+
+<div class="container">
+  {% if alert %}
+  <div class="alert alert-{{ alert.type }} mt-4" role="alert">
+    {{ alert.message }}
+  </div>
+  {% endif %}
+
+  <h2 class="display-6 my-4">
+		{% if type == 'challenge' %}
+    New Challenge 
+		{% else %}
+    New Question 
+		<span class="text-muted h5">for: {{ challenge.title }}</span>
+		{% endif %}
+  </h2>
+
+  <div class="py-2 mb-4">
+    <form action="/new/{{ type }}{% if type == 'question' %}/{{challenge.id}}{% endif %}" method="POST" class="">
+			{% csrf_token %}
+			<div class="form-floating mb-3">
+				<input type="text" class="form-control" id="title" 
+					name="{% if type == 'challenge' %}title{% else %}text{% endif %}" 
+				required>
+				<label for="{% if type == 'challenge' %}title{% else %}text{% endif %}">
+					{% if type == 'challenge' %} Challenge's {% else %} Question's {% endif %} title
+				</label>
+			</div>
+
+			{% if type == 'question' %}
+			<div class="" id="questions-div">
+				<div class="input-group mb-3">
+					<span class="input-group-text" id="option1">1</span>
+					<input type="text" class="form-control" name="option1" placeholder="Option" required>
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text" id="option2">2</span>
+					<input type="text" class="form-control" name="option2" placeholder="Option" required>
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text" id="option3">3</span>
+					<input type="text" class="form-control" name="option3" placeholder="Option" required>
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text" id="option4">4</span>
+					<input type="text" class="form-control" name="option4" placeholder="Option" required>
+				</div>
+			</div>
+
+			<div class="d-flex mb-4">
+				<select name="right" id="right" class="form-select" required>
+					<option value="0" class="" disabled selected>Select the right answer</option>
+					<option value="1" class="">Option 1</option>
+					<option value="2" class="">Option 2</option>
+					<option value="3" class="">Option 3</option>
+					<option value="4" class="">Option 4</option>
+				</select>
+			</div>
+			{% endif %}
+
+			<div class="d-flex justify-content-end">
+				<a href="{% url 'quiz:index' %}" class="btn btn-outline-secondary me-2" type="submit">Cancel</a>
+				<button class="btn btn-success" type="submit">Save</button>
+			</div>
+		</form>
+  </div>
+</div>
+
+{% endblock %}

@@ -8,14 +8,13 @@ from django.contrib.auth.hashers import make_password, check_password
 #	INDEX
 #
 def index(request):
+	authenticated = request.session.get('authenticated', False)
 	try:
 		challenges = Challenge.objects.order_by('-id')
 
-		user_id = request.session.get('user_id', None)
-		authenticated = request.session.get('authenticated', False)
 		return render(
 			request, 'pages/index.html',
-			{'challenges': challenges, 'user_id': user_id, 'authenticated': authenticated}
+			{'challenges': challenges, 'authenticated': authenticated}
 		)
 	except Challenge.DoesNotExist:
 		print('*******\n[ERROR] Getting challenges\n*******')
@@ -26,11 +25,12 @@ def index(request):
 #	CHALLENGE
 #
 def challenge(request, challenge_id):
+	authenticated = request.session.get('authenticated', False)
 	try:
 		questions = Question.objects.filter(challenge_id=challenge_id)
 		return render(
 			request, 'pages/challenge.html',
-			{'questions': questions, 'challenge_id': challenge_id}
+			{'questions': questions, 'challenge_id': challenge_id, 'authenticated': authenticated}
 		)
 	except Question.DoesNotExist:
 		print('*******\n[ERROR] Getting questions\n*******')
@@ -78,17 +78,95 @@ def solved(request):
 #	SCORES
 #
 def scores(request, challenge_id):
-	print('-------------------------------- CID')
-	print(challenge_id)
+	authenticated = request.session.get('authenticated', False)
 	if request.method == 'GET':
 		try:
 			scores = Score.objects.filter(challenge_id=challenge_id)
-			return render(request, 'pages/score.html', {'scores': scores})
+			return render(request, 'pages/score.html', {'scores': scores, 'authenticated': authenticated})
 		except:
 			print('*******\n[ERROR] Load scores\n*******')
 			return HttpResponse(status=400)
 	else:
 		return HttpResponse(status=400)
+
+#
+#	NEW CHALLENGE
+#
+def new_challenge(request):
+	authenticated = request.session.get('authenticated', False)
+	if request.method == 'GET':
+		return render(request, 'pages/new.html', {'type': 'challenge', 'authenticated': authenticated})
+
+	elif request.method == 'POST':
+		try:
+			user = User.objects.get(id=request.session.get('user_id'))
+			Challenge.objects.create(
+					title =	request.POST['title'],
+					user_id = user,
+					created_at = datetime.now()
+				)
+			return HttpResponseRedirect('/select')
+		except:
+			print('*******\n[ERROR] Create challenge\n*******')
+			return HttpResponse(status=500)
+	else:
+		return HttpResponseRedirect('/')
+
+#
+#	SELECT CHALLENGE
+#
+def select(request):
+	user_id = request.session.get('user_id', None)
+	authenticated = request.session.get('authenticated', False)
+	if request.method == 'GET':
+		try:
+			challenges = Challenge.objects.filter(user_id=user_id)
+			return render(request, 'pages/select.html', {'type': 'question', 'challenges': challenges, 'authenticated': authenticated})
+		except:
+			print('*******\n[ERROR] Select challenge\n*******')
+			return HttpResponse(status=500)
+
+	else:
+		return HttpResponseRedirect('/')
+
+#
+#	NEW QUESTION
+#
+def new_question(request, challenge_id):
+	authenticated = request.session.get('authenticated', False)
+	if request.method == 'GET':
+		try:
+			challenge = Challenge.objects.get(id=challenge_id)
+			return render(request, 'pages/new.html', {'type': 'question', 'challenge': challenge, 'authenticated': authenticated})
+		except:
+			print('*******\n[ERROR] Get new question\n*******')
+			return HttpResponse(status=500)
+
+
+	elif request.method == 'POST':
+		print(request.POST)
+		try:
+			challenge = Challenge.objects.get(id=challenge_id)
+			Question.objects.create(
+				text =  request.POST['text'],
+				option_1 = request.POST['option1'],
+				option_2 = request.POST['option2'],
+				option_3 = request.POST['option3'],
+				option_4 = request.POST['option4'],
+				right = request.POST['right'],
+				challenge_id = challenge,
+				created_at = datetime.now()
+			)
+			alert = {'type': 'success', 'message': 'New question saved.'}
+			return render(request, 'pages/new.html',
+			{'type': 'question', 'challenge': challenge, 'alert': alert, 'authenticated': authenticated})
+		except:
+			alert = {'type': 'danger', 'message': 'Failed to save question. Try again later.'}
+			print('*******\n[ERROR] Post new question\n*******')
+			return render(request, 'pages/select.html', {'alert': alert})
+	else:
+		return HttpResponseRedirect('/')
+
 
 #
 #	AUTH
