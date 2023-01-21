@@ -9,6 +9,8 @@ Make sure you have [Python](https://www.python.org/downloads/) and [Django](http
 ```bash
 git clone https://github.com/dantnog/quiz.git
 cd quiz
+# create your superuser
+python3 manage.py createsuperuser
 # create the db file
 python3 manage.py makemigrations
 python3 manage.py migrate
