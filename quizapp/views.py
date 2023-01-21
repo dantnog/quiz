@@ -296,6 +296,29 @@ def delete_challenge(request, challenge_id):
 		return HttpResponseRedirect('/')
 
 #
+#	DELETE QUESTION
+#
+def delete_question(request, question_id):
+	user_id = request.session.get('user_id', None)
+	if request.method == 'GET':
+		try:
+			question = Question.objects.get(id=question_id)
+			if question.challenge_id.user_id.id != user_id:
+				alert = {'type': 'danger', 'message': 'That question is not yours.'}
+				return render(request, 'pages/index.html', {'alert': alert})
+				
+			question.delete()
+			return HttpResponseRedirect(f'/edit/selectquestion/{question.challenge_id.id}')
+		except:
+			alert = {'type': 'danger', 'message': 'Failed to delete challenge. Try again later.'}
+			print('*******\n[ERROR] Delete challenge\n*******')
+			return render(request, 'pages/mychallenges.html', {'alert': alert})
+	
+	else:
+		return HttpResponseRedirect('/')
+
+
+#
 #	AUTH
 #
 def auth(request):

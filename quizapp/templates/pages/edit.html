@@ -52,7 +52,7 @@
         <div class="card mb-4">
           <div class="card-body">
             <h5 class="card-title mb-3">{{ item.text }}</h5> 
-            <a href="{% url 'quiz:edit_question' item.id %}" class="btn btn-sm btn-danger">Delete</a>
+            <a href="{% url 'quiz:delete_question' item.id %}" class="btn btn-sm btn-danger">Delete</a>
             <a href="{% url 'quiz:edit_question' item.id %}" class="btn btn-sm btn-secondary">Edit</a>
           </div>
         </div>
@@ -95,7 +95,9 @@
 				{% if type == 'challenge' %}
 				<a href="{% url 'quiz:select_question' challenge.id %}" class="btn btn-info me-2">Questions</a>
 				{% endif %}
+        {% if not type == 'select' %}
 				<button class="btn btn-success" type="submit">Update</button>
+        {% endif %}
 			</div>
 		</form>
   </div>
