@@ -113,15 +113,15 @@ def new_challenge(request):
 		return HttpResponseRedirect('/')
 
 #
-#	SELECT CHALLENGE
+#	MY CHALLENGES
 #
-def select(request):
+def my_challenges(request):
 	user_id = request.session.get('user_id', None)
 	authenticated = request.session.get('authenticated', False)
 	if request.method == 'GET':
 		try:
 			challenges = Challenge.objects.filter(user_id=user_id)
-			return render(request, 'pages/select.html', {'type': 'question', 'challenges': challenges, 'authenticated': authenticated})
+			return render(request, 'pages/mychallenges.html', {'type': 'question', 'challenges': challenges, 'authenticated': authenticated})
 		except:
 			print('*******\n[ERROR] Select challenge\n*******')
 			return HttpResponse(status=500)

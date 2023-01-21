@@ -13,12 +13,12 @@ Score
   </h2>
 	{% if scores %}
 	<div class="row gap-4 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 mx-1">
-	{% for score in scores %}
+		{% for score in scores %}
 		<div class=" justify-content-between align-middle flex-row card p-4">
-				<h4 class="card-title text-break">{{ score.user }}</h4>
-				<span class="btn btn-lg btn-warning">{{ score.points }}</span>
+			<h4 class="card-title text-break">{{ score.user }}</h4>
+			<span class="btn btn-lg btn-warning">{{ score.points }}</span>
 		</div>
-	{% endfor %}
+		{% endfor %}
 	</div>
 	{% endif %}
 </div>

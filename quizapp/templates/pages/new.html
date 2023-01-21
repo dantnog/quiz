@@ -12,6 +12,7 @@
 {% include 'layouts/navbar.html' %}
 
 <div class="container">
+
   {% if alert %}
   <div class="alert alert-{{ alert.type }} mt-4" role="alert">
     {{ alert.message }}
@@ -71,7 +72,7 @@
 			{% endif %}
 
 			<div class="d-flex justify-content-end">
-				<a href="{% url 'quiz:index' %}" class="btn btn-outline-secondary me-2" type="submit">Cancel</a>
+				<a href="{% url 'quiz:my_challenges' %}" class="btn btn-outline-secondary me-2" type="submit">Cancel</a>
 				<button class="btn btn-success" type="submit">Save</button>
 			</div>
 		</form>

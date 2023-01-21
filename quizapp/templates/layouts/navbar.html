@@ -16,7 +16,7 @@
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="{% url 'quiz:new_challenge' %}">Challenge</a></li>
-            <li><a class="dropdown-item" href="{% url 'quiz:select' %}">Question</a></li>
+            <li><a class="dropdown-item" href="{% url 'quiz:my_challenges' %}">Question</a></li>
           </ul>
         </li>
         {% endif %}
@@ -27,7 +27,7 @@
           <ul class="dropdown-menu">
             {% if authenticated %}
             <li><a class="dropdown-item" href="#">Profile</a></li>
-            <li><a class="dropdown-item" href="{% url 'quiz:select' %}">My challenges</a></li>
+            <li><a class="dropdown-item" href="{% url 'quiz:my_challenges' %}">My challenges</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{% url 'quiz:logout' %}">Logout</a></li>
             {% else %}
