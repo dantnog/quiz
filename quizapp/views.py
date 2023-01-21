@@ -206,6 +206,72 @@ def edit_challenge(request, challenge_id):
 	else:
 		return HttpResponseRedirect('/')
 
+#
+#	SELECT QUESTION
+#
+def select_question(request, challenge_id):
+	authenticated = request.session.get('authenticated', False)
+	if request.method == 'GET':
+		try:
+			questions = Question.objects.filter(challenge_id=challenge_id)
+			print(questions)
+
+			return render(
+				request, 'pages/edit.html',
+				{'type': 'select', 'questions': questions, 'challenge_id': challenge_id,'authenticated': authenticated}
+			)
+		except:
+			alert = {'type': 'danger', 'message': 'Question not found'}
+			return render(
+				request, 'pages/edit.html',
+				{'type': 'select', 'alert': alert, 'authenticated': authenticated}
+			)
+
+	else:
+		return HttpResponseRedirect('/')
+
+
+#
+#	EDIT QUESTION
+#
+def edit_question(request, question_id):
+	authenticated = request.session.get('authenticated', False)
+	user_id = request.session.get('user_id', None)
+	if request.method == 'GET':
+		try:
+			question = Question.objects.get(id=question_id)
+
+			return render(
+				request, 'pages/edit.html',
+				{'type': 'question', 'question': question, 'authenticated': authenticated}
+			)
+		except:
+			alert = {'type': 'danger', 'message': 'Question not found'}
+			return render(
+				request, 'pages/edit.html',
+				{'type': 'question', 'alert': alert, 'authenticated': authenticated}
+			)
+
+	elif request.method == 'POST':
+		try:
+			question = Question.objects.get(id=question_id)
+			if question.challenge_id.user_id.id != user_id:
+				alert = {'type': 'danger', 'message': 'That question is not yours.'}
+				return render(request, 'pages/index.html', {'alert': alert})
+
+			question.text = request.POST.get('text')
+			question.option_1 = request.POST.get('option1')
+			question.option_2 = request.POST.get('option2')
+			question.option_3 = request.POST.get('option3')
+			question.option_4 = request.POST.get('option4')
+			question.right = request.POST.get('right')
+			question.save()
+			return HttpResponseRedirect('/mychallenges')
+		except:
+			return HttpResponseRedirect('/mychallenges')
+
+	else:
+		return HttpResponseRedirect('/')
 
 #
 #	DELETE CHALLENGE

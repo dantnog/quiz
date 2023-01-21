@@ -14,4 +14,6 @@ urlpatterns = [
 	path('mychallenges', views.my_challenges, name = 'my_challenges'),
 	path('delete/challenge/<int:challenge_id>', views.delete_challenge, name = 'delete_challenge'),
 	path('edit/challenge/<int:challenge_id>', views.edit_challenge, name = 'edit_challenge'),
+	path('edit/selectquestion/<int:challenge_id>', views.select_question, name = 'select_question'),
+	path('edit/question/<int:question_id>', views.edit_question, name = 'edit_question'),
 ]
