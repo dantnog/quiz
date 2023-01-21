@@ -121,7 +121,7 @@ def my_challenges(request):
 	if request.method == 'GET':
 		try:
 			challenges = Challenge.objects.filter(user_id=user_id)
-			return render(request, 'pages/mychallenges.html', {'type': 'question', 'challenges': challenges, 'authenticated': authenticated})
+			return render(request, 'pages/mychallenges.html', {'challenges': challenges, 'authenticated': authenticated})
 		except:
 			print('*******\n[ERROR] My challenges\n*******')
 			return HttpResponse(status=500)
@@ -165,6 +165,47 @@ def new_question(request, challenge_id):
 			return render(request, 'pages/mychallenges.html', {'alert': alert})
 	else:
 		return HttpResponseRedirect('/')
+
+#
+#	EDIT CHALLENGE
+#
+def edit_challenge(request, challenge_id):
+	authenticated = request.session.get('authenticated', False)
+	user_id = request.session.get('user_id', None)
+	if request.method == 'GET':
+		try:
+			challenge = Challenge.objects.get(id=challenge_id)
+
+			return render(
+				request, 'pages/edit.html',
+				{'type': 'challenge', 'challenge': challenge, 'authenticated': authenticated}
+			)
+
+		except:
+			alert = {'type': 'danger', 'message': 'Challenge not found'}
+			return render(
+				request, 'pages/edit.html',
+				{'type': 'challenge', 'alert': alert, 'authenticated': authenticated}
+			)
+
+
+	elif request.method == 'POST':
+		try:
+			challenge = Challenge.objects.get(id=challenge_id)
+			if challenge.user_id.id != user_id:
+				alert = {'type': 'danger', 'message': 'That challenge is not yours.'}
+				return render(request, 'pages/index.html', {'alert': alert})
+
+			# challenge.update(title=request.POST.get('title')) # not working
+			challenge.title = request.POST.get('title')
+			challenge.save()
+			return HttpResponseRedirect('/mychallenges')
+		except:
+			return HttpResponseRedirect('/mychallenges')
+
+	else:
+		return HttpResponseRedirect('/')
+
 
 #
 #	DELETE CHALLENGE

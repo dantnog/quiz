@@ -13,4 +13,5 @@ urlpatterns = [
 	path('new/question/<int:challenge_id>', views.new_question, name = 'new_question'),
 	path('mychallenges', views.my_challenges, name = 'my_challenges'),
 	path('delete/challenge/<int:challenge_id>', views.delete_challenge, name = 'delete_challenge'),
+	path('edit/challenge/<int:challenge_id>', views.edit_challenge, name = 'edit_challenge'),
 ]
