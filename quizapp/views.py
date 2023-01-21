@@ -105,7 +105,7 @@ def new_challenge(request):
 					user_id = user,
 					created_at = datetime.now()
 				)
-			return HttpResponseRedirect('/select')
+			return HttpResponseRedirect('/mychallenges')
 		except:
 			print('*******\n[ERROR] Create challenge\n*******')
 			return HttpResponse(status=500)
@@ -123,7 +123,7 @@ def my_challenges(request):
 			challenges = Challenge.objects.filter(user_id=user_id)
 			return render(request, 'pages/mychallenges.html', {'type': 'question', 'challenges': challenges, 'authenticated': authenticated})
 		except:
-			print('*******\n[ERROR] Select challenge\n*******')
+			print('*******\n[ERROR] My challenges\n*******')
 			return HttpResponse(status=500)
 
 	else:
@@ -144,7 +144,6 @@ def new_question(request, challenge_id):
 
 
 	elif request.method == 'POST':
-		print(request.POST)
 		try:
 			challenge = Challenge.objects.get(id=challenge_id)
 			Question.objects.create(
@@ -163,10 +162,31 @@ def new_question(request, challenge_id):
 		except:
 			alert = {'type': 'danger', 'message': 'Failed to save question. Try again later.'}
 			print('*******\n[ERROR] Post new question\n*******')
-			return render(request, 'pages/select.html', {'alert': alert})
+			return render(request, 'pages/mychallenges.html', {'alert': alert})
 	else:
 		return HttpResponseRedirect('/')
 
+#
+#	DELETE CHALLENGE
+#
+def delete_challenge(request, challenge_id):
+	user_id = request.session.get('user_id', None)
+	if request.method == 'GET':
+		try:
+			challenge = Challenge.objects.get(id=challenge_id)
+			if challenge.user_id.id != user_id:
+				alert = {'type': 'danger', 'message': 'That challenge is not yours.'}
+				return render(request, 'pages/index.html', {'alert': alert})
+				
+			challenge.delete()
+			return HttpResponseRedirect('/mychallenges')
+		except:
+			alert = {'type': 'danger', 'message': 'Failed to delete challenge. Try again later.'}
+			print('*******\n[ERROR] Delete challenge\n*******')
+			return render(request, 'pages/mychallenges.html', {'alert': alert})
+	
+	else:
+		return HttpResponseRedirect('/')
 
 #
 #	AUTH

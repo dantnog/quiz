@@ -8,6 +8,13 @@ Home
 
 {% include 'layouts/navbar.html' %}
 <div class="container">
+
+  {% if alert %}
+  <div class="alert alert-{{ alert.type }} mt-4" role="alert">
+    {{ alert.message }}
+  </div>
+  {% endif %}
+
   <h2 class="display-6 my-4">
     All challenges
   </h2>
