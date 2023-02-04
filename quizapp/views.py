@@ -379,3 +379,10 @@ def logout(request):
 	del request.session['user_id']
 	del request.session['user_name']
 	return HttpResponseRedirect('/auth')
+
+#
+#	404
+#
+def error_404(request, exception):
+	authenticated = request.session.get('authenticated', False)
+	return render(request, 'pages/404.html', {'authenticated': authenticated})
