@@ -22,6 +22,23 @@ def index(request):
 		#raise Http404('Challenge not found')
 
 #
+#	SEARCH
+#
+def search(request):
+	authenticated = request.session.get('authenticated', False)
+	query = request.POST['search_query']
+	try:
+		challenges = Challenge.objects.filter(title__contains=query)
+
+		return render(
+			request, 'pages/index.html',
+			{'challenges': challenges, 'authenticated': authenticated}
+		)
+	except Challenge.DoesNotExist:
+		print('*******\n[ERROR] Search challenges\n*******')
+		return HttpResponse(status=404)
+
+#
 #	CHALLENGE
 #
 def challenge(request, challenge_id):
