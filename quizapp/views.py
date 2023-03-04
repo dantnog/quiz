@@ -60,6 +60,7 @@ def challenge(request, challenge_id):
 def solved(request):
 	if request.method == 'POST':
 		challenge_id = request.POST['challenge_id']
+		user_id = request.session.get('user_id')
 		try:
 			questions = Question.objects.filter(challenge_id=challenge_id)
 
@@ -75,15 +76,23 @@ def solved(request):
 					points += 1
 
 			challenge = Challenge.objects.get(id=challenge_id)
-			user = User.objects.get(id=request.session.get('user_id'))
-			Score.objects.create(
-					user = request.session.get('user_name'),
-					tries = 1,
-					points = points,
-					challenge_id = challenge,
-					user_id = user,
-					created_at = datetime.now()
-				)
+			user = User.objects.get(id=user_id)
+			again = Score.objects.filter(user_id=user_id, challenge_id=challenge_id)
+			again = again[0]
+			if again:
+				again.tries = again.tries + 1
+				again.points = points
+				again.save()
+			else:
+				Score.objects.create(
+						user = request.session.get('user_name'),
+						tries = 1,
+						points = points,
+						challenge_id = challenge,
+						user_id = user,
+						created_at = datetime.now()
+					)
+				
 			return HttpResponseRedirect(f'/scores/{challenge_id}')
 		except:
 			print('*******\n[ERROR] Saving points\n*******')
