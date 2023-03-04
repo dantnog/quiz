@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block content %}
+{% include 'layouts/navbar.html' %}
+
+<div class="container">
+  <h2 class="display-6 my-4">Profile</h2>
+
+	{% if scores %}
+	<div class="row gap-4 row-cols-1 row-cols-lg-2 mx-2">
+		{% for score in scores %}
+		<div class=" justify-content-between align-middle flex-row card p-4">
+			<h4 class="card-title text-break">{{ score.challenge_id.title }}</h4>
+      <p class="">Tried {{ score.tries }} times</p>
+			<span class="btn btn-lg btn-warning">{{ score.points }}</span>
+		</div>
+		{% endfor %}
+	</div>
+	{% endif %}
+</div>
+
+{% endblock %}

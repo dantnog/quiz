@@ -18,4 +18,5 @@ urlpatterns = [
 	path('edit/selectquestion/<int:challenge_id>', views.select_question, name = 'select_question'),
 	path('edit/question/<int:question_id>', views.edit_question, name = 'edit_question'),
 	path('search', views.search, name='search'),
+	path('profile', views.profile, name='profile')
 ]

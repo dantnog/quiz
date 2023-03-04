@@ -334,6 +334,23 @@ def delete_question(request, question_id):
 	else:
 		return HttpResponseRedirect('/')
 
+#
+#	PROFILE
+#
+def profile(request):
+	authenticated = request.session.get('authenticated', False)
+	user_id = request.session.get('user_id', None)
+	
+	if request.method == 'POST':
+		return	
+
+	try:
+		scores = Score.objects.filter(user_id=user_id)
+		return render(request, 'pages/profile.html', {
+			'authenticated': authenticated, 'scores': scores
+		})
+	except:
+		return HttpResponseRedirect('/')
 
 #
 #	AUTH
